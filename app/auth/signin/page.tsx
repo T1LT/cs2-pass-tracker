@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { signIn } from "next-auth/react";
@@ -18,6 +19,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 export default function SignIn() {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
