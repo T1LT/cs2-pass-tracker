@@ -41,7 +41,7 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
   email         String?
   emailVerified DateTime?
@@ -50,6 +50,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   passes        Pass[]
+  passSessions  PassSession[]
 }
 
 model VerificationToken {
@@ -61,13 +62,41 @@ model VerificationToken {
 }
 
 model Pass {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  startDate   DateTime
-  endDate     DateTime
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  startDate    DateTime
+  endDate      DateTime
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  currentStars Int           @default(0)
+  totalStars   Int           @default(0)
+  sessions     PassSession[]
+}
+
+model SteamAccount {
+  id        String        @id @default(cuid())
+  steamId   String        @unique
+  side      String // "CT" or "T"
+  sessions  PassSession[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model PassSession {
+  id             String       @id @default(cuid())
+  passId         String
+  pass           Pass         @relation(fields: [passId], references: [id], onDelete: Cascade)
+  steamAccountId String
+  steamAccount   SteamAccount @relation(fields: [steamAccountId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  starsStart     Int
+  starsEnd       Int
+  startDate      DateTime
+  completeDate   DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
