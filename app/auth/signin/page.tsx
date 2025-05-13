@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { signIn } from "next-auth/react";
@@ -16,6 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export default function SignIn() {
   const router = useRouter();

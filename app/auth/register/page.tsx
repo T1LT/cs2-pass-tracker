@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export default function Register() {
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

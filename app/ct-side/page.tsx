@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  getSteamAccounts,
-  deleteSteamAccount,
-  createPassSession,
-} from "@/lib/actions";
+import { getSteamAccounts, createPassSession } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
