@@ -3,13 +3,17 @@
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
+import Link from "next/link";
 
 export function Navbar() {
   const { data: session } = useSession();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center justify-end px-4">
+      <div className="flex h-14 items-center justify-between px-8">
+        <Link href="/" className="text-2xl font-bold tracking-tight">
+          Pass Tracker
+        </Link>
         {session?.user ? (
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-sm text-muted-foreground">

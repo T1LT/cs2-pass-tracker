@@ -89,7 +89,8 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
             startDate,
             endDate,
             session.starsStart,
-            session.starsEnd ?? 0
+            session.starsEnd ?? 0,
+            session.purchasedPass
           )
         )
       );
@@ -144,16 +145,16 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
   const totalStarsEarned =
     validSessions.length > 0
       ? Math.min(
-        ...validSessions.map(([_, session]) => {
-          if (!session.starsEnd) return 0;
-          if (session.purchasedPass) {
-            return session.starsEnd === session.starsStart
-              ? 40
-              : 40 + (session.starsEnd - session.starsStart);
-          }
-          return session.starsEnd - session.starsStart;
-        })
-      )
+          ...validSessions.map(([_, session]) => {
+            if (!session.starsEnd) return 0;
+            if (session.purchasedPass) {
+              return session.starsEnd === session.starsStart
+                ? 40
+                : 40 + (session.starsEnd - session.starsStart);
+            }
+            return session.starsEnd - session.starsStart;
+          })
+        )
       : "-";
 
   return (
@@ -346,7 +347,7 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
                                   ? session.starsEnd === session.starsStart
                                     ? 40
                                     : 40 +
-                                    (session.starsEnd - session.starsStart)
+                                      (session.starsEnd - session.starsStart)
                                   : session.starsEnd - session.starsStart}{" "}
                                 stars
                               </div>

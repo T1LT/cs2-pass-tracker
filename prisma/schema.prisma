@@ -101,6 +101,8 @@ model PassSession {
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   starsStart     Int
   starsEnd       Int
+  starsEarned    Int          @default(0)
+  purchasedPass  Boolean      @default(false)
   startDate      DateTime
   completeDate   DateTime
   createdAt      DateTime     @default(now())

@@ -89,7 +89,8 @@ export function TSideClient({ initialAccounts }: TSideClientProps) {
             startDate,
             endDate,
             session.starsStart,
-            session.starsEnd ?? 0
+            session.starsEnd ?? 0,
+            session.purchasedPass
           )
         )
       );
