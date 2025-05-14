@@ -16,11 +16,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 export default function SignIn() {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -44,8 +41,8 @@ export default function SignIn() {
 
       router.push("/");
       router.refresh();
-    } catch (error) {
-      setError("An error occurred");
+    } catch (err) {
+      setError(`An error occurred ${err}`);
     }
   };
 

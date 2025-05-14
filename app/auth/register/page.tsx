@@ -15,10 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export default function Register() {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -46,8 +44,8 @@ export default function Register() {
         const data = await res.json();
         setError(data.message || "Something went wrong");
       }
-    } catch (error) {
-      setError("An error occurred");
+    } catch (err) {
+      setError(`An error occurred ${err}`);
     }
   };
 

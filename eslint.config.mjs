@@ -15,12 +15,22 @@ const eslintConfig = [
     ignores: ["**/generated/prisma/**/*"],
   },
   {
+    files: ["**/*.{ts,tsx}", "**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+    },
+  },
+  {
     files: ["**/generated/prisma/**/*"],
     rules: {
       "@typescript-eslint/no-unused-expressions": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-this-alias": "off",
       "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ];

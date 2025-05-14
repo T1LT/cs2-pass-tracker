@@ -117,3 +117,39 @@ export async function createPassSession(
     return { error: "Failed to create pass session" };
   }
 }
+
+export async function getLastSessionStars(steamId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return { error: "Unauthorized" };
+    }
+
+    // Find the steam account
+    const steamAccount = await prisma.steamAccount.findFirst({
+      where: {
+        steamId,
+      },
+      include: {
+        sessions: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 1,
+          select: {
+            starsEnd: true,
+          },
+        },
+      },
+    });
+
+    if (!steamAccount) {
+      return { error: "Steam account not found" };
+    }
+
+    return { data: steamAccount.sessions[0]?.starsEnd ?? 0 };
+  } catch (error) {
+    console.error("Error fetching last session stars:", error);
+    return { error: "Failed to fetch last session stars" };
+  }
+}

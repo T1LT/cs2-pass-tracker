@@ -22,7 +22,9 @@ export default function Home() {
                 unoptimized
               />
             </Link>
-            <span className="text-2xl font-bold tracking-tight">CT Side</span>
+            <span className="text-2xl font-bold tracking-tight text-indigo-400">
+              CT Side
+            </span>
           </div>
           <div className="flex flex-col items-center gap-4">
             <Link
@@ -39,7 +41,9 @@ export default function Home() {
                 unoptimized
               />
             </Link>
-            <span className="text-2xl font-bold tracking-tight">T Side</span>
+            <span className="text-2xl font-bold tracking-tight text-orange-300">
+              T Side
+            </span>
           </div>
         </div>
       </main>
