@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Navbar } from "@/components/Navbar";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased overflow-hidden h-screen`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          <main className="h-[calc(100vh-3.5rem)] overflow-auto">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

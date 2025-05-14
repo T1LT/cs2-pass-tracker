@@ -8,6 +8,17 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface SteamAccount {
   id: string;
@@ -32,6 +43,8 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
   const [lastSessionStars, setLastSessionStars] = useState<
     Record<string, number>
   >({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   useEffect(() => {
     // Fetch last session stars for each account
@@ -59,6 +72,7 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
 
   const handlePassSessionSubmit = async () => {
     try {
+      setIsLoading(true);
       const sessions = Object.entries(passSessions);
       if (sessions.length === 0) return;
 
@@ -90,10 +104,27 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
           }
         });
         setLastSessionStars(updatedStars);
-        setPassSessions({});
+
+        // Reinitialize passSessions with the updated lastSessionStars
+        const newPassSessions: Record<string, PassSession> = {};
+        initialAccounts.forEach((account) => {
+          if (updatedStars[account.steamId] !== undefined) {
+            newPassSessions[account.steamId] = {
+              starsStart: updatedStars[account.steamId],
+              purchasedPass: false,
+            };
+          }
+        });
+        setPassSessions(newPassSessions);
+
+        // Sign out after successful submission
+        await signOut();
       }
     } catch (error) {
       console.error("Error creating pass sessions:", error);
+    } finally {
+      setIsLoading(false);
+      setShowConfirmDialog(false);
     }
   };
 
@@ -113,20 +144,20 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
   const totalStarsEarned =
     validSessions.length > 0
       ? Math.min(
-          ...validSessions.map(([_, session]) => {
-            if (!session.starsEnd) return 0;
-            if (session.purchasedPass) {
-              return session.starsEnd === session.starsStart
-                ? 40
-                : 40 + (session.starsEnd - session.starsStart);
-            }
-            return session.starsEnd - session.starsStart;
-          })
-        )
+        ...validSessions.map(([_, session]) => {
+          if (!session.starsEnd) return 0;
+          if (session.purchasedPass) {
+            return session.starsEnd === session.starsStart
+              ? 40
+              : 40 + (session.starsEnd - session.starsStart);
+          }
+          return session.starsEnd - session.starsStart;
+        })
+      )
       : "-";
 
   return (
-    <div className="min-h-screen p-8 flex flex-col items-center">
+    <div className="h-full p-8 pt-24 flex flex-col items-center">
       <div className="mb-8 flex justify-center items-center gap-4">
         <Link href="/">
           <ArrowLeft className="h-7 w-7 shrink-0" strokeWidth={4} />
@@ -315,7 +346,7 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
                                   ? session.starsEnd === session.starsStart
                                     ? 40
                                     : 40 +
-                                      (session.starsEnd - session.starsStart)
+                                    (session.starsEnd - session.starsStart)
                                   : session.starsEnd - session.starsStart}{" "}
                                 stars
                               </div>
@@ -344,8 +375,9 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
                   <div className="pt-4">
                     <Button
                       className="w-full"
-                      onClick={handlePassSessionSubmit}
+                      onClick={() => setShowConfirmDialog(true)}
                       disabled={
+                        isLoading ||
                         pendingSessions.length === 0 ||
                         !pendingSessions.every(
                           ([_, session]) =>
@@ -362,7 +394,14 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
                         )
                       }
                     >
-                      Submit All Sessions
+                      {isLoading ? (
+                        <>
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          Submitting...
+                        </>
+                      ) : (
+                        "Submit All Sessions"
+                      )}
                     </Button>
                   </div>
                 </>
@@ -371,6 +410,43 @@ export function CTSideClient({ initialAccounts }: CTSideClientProps) {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Submission</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div>
+                Please review the following session details before submitting:
+                <div className="mt-4 space-y-2">
+                  {pendingSessions.map(([steamId, session]) => (
+                    <div key={steamId} className="text-sm">
+                      <div className="font-medium">{steamId}</div>
+                      <div className="text-muted-foreground">
+                        Stars: {session.starsStart} → {session.starsEnd}
+                        {session.purchasedPass && (
+                          <span className="ml-2 text-xs text-indigo-400">
+                            (New Pass)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 font-medium">
+                  Total Stars Earned: {totalStarsEarned}
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handlePassSessionSubmit}>
+              Confirm & Submit
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

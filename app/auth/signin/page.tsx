@@ -20,9 +20,11 @@ export default function SignIn() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const name = formData.get("username") as string;
     const password = formData.get("password") as string;
@@ -43,11 +45,13 @@ export default function SignIn() {
       router.refresh();
     } catch (err) {
       setError(`An error occurred ${err}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="h-full flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
@@ -98,8 +102,15 @@ export default function SignIn() {
             )}
           </CardContent>
           <CardFooter className="pt-6">
-            <Button type="submit" className="w-full">
-              Sign in
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </CardFooter>
         </form>
