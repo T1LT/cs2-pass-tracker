@@ -5,7 +5,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay } from "date-fns";
-import { UserType } from "@prisma/client";
 
 const prismaClient = new PrismaClient();
 
@@ -163,12 +162,6 @@ export async function getLastSessionStars(steamId: string) {
     console.error("Error fetching last session stars:", error);
     return { error: "Failed to fetch last session stars" };
   }
-}
-
-interface SessionUser {
-  id: string;
-  name: string | null;
-  userType: UserType;
 }
 
 export async function getSessions(date: string) {
